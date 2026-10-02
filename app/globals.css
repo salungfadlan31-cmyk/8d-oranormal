@@ -1,26 +1,433 @@
-@import "tailwindcss";
+/* ==========================================================
+   TEMA 8D AUDIO — hitam · biru · ungu
+   Tidak perlu mengubah JSX. Semua selector mengikuti struktur
+   elemen yang sudah ada.
+
+   CARA PAKAI
+   1. Salin isi file ini ke app/globals.css (atau import file ini
+      di layout.js), lalu pindahkan baris @import font di bawah
+      ke paling atas file CSS.
+   ========================================================== */
+
+@import url("https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap");
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+    --ink: #05040d;
+    --navy: #0a1033;
+    --panel: rgba(13, 15, 40, 0.72);
+    --panel-solid: #0d0f28;
+    --line: rgba(139, 124, 255, 0.22);
+    --line-soft: rgba(139, 124, 255, 0.12);
+    --blue: #3d7bff;
+    --violet: #8b5cf6;
+    --purple: #b657ff;
+    --text: #eceeff;
+    --muted: #8e93bd;
+    --danger: #ff6b9a;
+    --grad: linear-gradient(90deg, var(--blue), var(--violet) 55%, var(--purple));
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* ---------- Dasar halaman ---------- */
+
+html body {
+    min-height: 100vh;
+    margin: 0;
+    color: var(--text);
+    font-family: "Sora", system-ui, -apple-system, "Segoe UI", sans-serif;
+    background:
+        radial-gradient(60rem 36rem at 12% -8%, rgba(61, 123, 255, 0.28), transparent 60%),
+        radial-gradient(52rem 34rem at 108% 6%, rgba(182, 87, 255, 0.24), transparent 58%),
+        radial-gradient(48rem 30rem at 50% 118%, rgba(139, 92, 246, 0.18), transparent 60%),
+        linear-gradient(180deg, var(--navy) 0%, var(--ink) 55%);
+    background-attachment: fixed;
+    -webkit-font-smoothing: antialiased;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+main[class] {
+    min-height: 100vh;
+    padding: 56px 20px 72px;
+    box-sizing: border-box;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+main[class] > div[class] {
+    max-width: 40rem;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* ---------- Panel form ---------- */
+
+main[class] form {
+    gap: 0;
+    padding: 12px 28px 28px;
+    border: 1px solid var(--line);
+    border-radius: 22px;
+    background: var(--panel);
+    -webkit-backdrop-filter: blur(18px);
+    backdrop-filter: blur(18px);
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.02) inset,
+        0 24px 80px -20px rgba(61, 123, 255, 0.35),
+        0 8px 40px -12px rgba(182, 87, 255, 0.3);
+}
+
+main[class] form > div {
+    padding: 22px 0;
+}
+
+main[class] form > div + div {
+    border-top: 1px solid var(--line-soft);
+}
+
+main[class] form label {
+    color: var(--text);
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+}
+
+.setting-top,
+main[class] form .setting-top,
+main[class] form .justify-between {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+/* Nilai di sebelah kanan label slider */
+.setting-top span,
+main[class] form .setting-top span,
+main[class] form .justify-between span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 4.2rem;
+    padding: 3px 12px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: linear-gradient(135deg, rgba(61, 123, 255, 0.16), rgba(182, 87, 255, 0.16));
+    color: #d9d4ff;
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+    margin-left: auto;
+}
+
+.setting {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+.setting:last-child {
+    margin-bottom: 0;
+}
+
+.setting small {
+    color: var(--muted);
+    font-size: 0.8rem;
+    line-height: 1.4;
+}
+
+main[class] form p {
+    color: var(--muted);
+    font-size: 0.82rem;
+    line-height: 1.6;
+}
+
+main[class] form code {
+    padding: 2px 8px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: rgba(139, 92, 246, 0.14);
+    color: #cdbfff;
+    font-size: 0.78rem;
+}
+
+/* ---------- Input file ---------- */
+
+main[class] form input[type="file"] {
+    box-sizing: border-box;
+    padding: 14px;
+    border: 1.5px dashed rgba(139, 124, 255, 0.4);
+    border-radius: 14px;
+    background: rgba(8, 10, 30, 0.6);
+    color: var(--muted);
+    font-family: inherit;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+}
+
+main[class] form input[type="file"]:hover {
+    border-color: var(--violet);
+    background: rgba(20, 18, 60, 0.7);
+    box-shadow: 0 0 28px -8px rgba(139, 92, 246, 0.6);
+}
+
+main[class] form input[type="file"]::file-selector-button {
+    margin-right: 14px;
+    padding: 9px 18px;
+    border: 0;
+    border-radius: 10px;
+    background: var(--grad);
+    color: #fff;
+    font-family: inherit;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: filter 0.2s, transform 0.2s;
+}
+
+main[class] form input[type="file"]::file-selector-button:hover {
+    filter: brightness(1.15);
+    transform: translateY(-1px);
+}
+
+/* ---------- Slider ---------- */
+
+main[class] form input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 22px;
+    margin: 4px 0 0;
+    background: transparent;
+    cursor: pointer;
+}
+
+main[class] form input[type="range"]::-webkit-slider-runnable-track {
+    height: 6px;
+    border-radius: 999px;
+    background: var(--grad);
+    box-shadow: 0 0 14px rgba(139, 92, 246, 0.45);
+}
+
+main[class] form input[type="range"]::-moz-range-track {
+    height: 6px;
+    border-radius: 999px;
+    background: var(--grad);
+    box-shadow: 0 0 14px rgba(139, 92, 246, 0.45);
+}
+
+main[class] form input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    margin-top: -7px;
+    border: 3px solid var(--panel-solid);
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 0 0 2px var(--violet), 0 0 18px rgba(182, 87, 255, 0.85);
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+
+main[class] form input[type="range"]::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    border: 3px solid var(--panel-solid);
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 0 0 2px var(--violet), 0 0 18px rgba(182, 87, 255, 0.85);
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+
+main[class] form input[type="range"]:hover::-webkit-slider-thumb,
+main[class] form input[type="range"]:active::-webkit-slider-thumb {
+    transform: scale(1.18);
+    box-shadow: 0 0 0 2px var(--purple), 0 0 26px rgba(182, 87, 255, 1);
+}
+
+main[class] form input[type="range"]:hover::-moz-range-thumb,
+main[class] form input[type="range"]:active::-moz-range-thumb {
+    transform: scale(1.18);
+    box-shadow: 0 0 0 2px var(--purple), 0 0 26px rgba(182, 87, 255, 1);
+}
+
+/* ---------- Tombol utama ---------- */
+
+main[class] form button[type="submit"] {
+    margin-top: 12px;
+    padding: 15px 20px;
+    border: 0;
+    border-radius: 14px;
+    background: var(--grad);
+    background-size: 160% 100%;
+    background-position: 0% 0;
+    color: #fff;
+    font-family: inherit;
+    font-size: 0.98rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    box-shadow: 0 10px 34px -8px rgba(139, 92, 246, 0.8);
+    transition: background-position 0.4s, transform 0.2s, box-shadow 0.2s;
+}
+
+main[class] form button[type="submit"]:hover:not(:disabled) {
+    background-position: 100% 0;
+    transform: translateY(-2px);
+    box-shadow: 0 14px 40px -8px rgba(182, 87, 255, 0.95);
+}
+
+main[class] form button[type="submit"]:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+main[class] form button[type="submit"]:disabled {
+    opacity: 0.6;
+    cursor: progress;
+    animation: pulse-glow 1.6s ease-in-out infinite;
+}
+
+/* Teks "Sedang membuat efek..." */
+main[class] > div > form + p {
+    margin: 18px 4px 0;
+    color: #bfb2ff;
+    font-size: 0.88rem;
+    text-align: center;
+}
+
+/* ---------- Panel pemutar audio ---------- */
+
+main[class] > div > div {
+    margin-top: 24px;
+    gap: 0;
+    padding: 8px 28px 28px;
+    border: 1px solid var(--line);
+    border-radius: 22px;
+    background: var(--panel);
+    -webkit-backdrop-filter: blur(18px);
+    backdrop-filter: blur(18px);
+}
+
+main[class] > div > div > div {
+    padding: 20px 0 0;
+}
+
+main[class] > div > div > div p {
+    margin-bottom: 10px;
+    color: var(--muted);
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+main[class] audio {
+    display: block;
+    width: 100%;
+    border-radius: 999px;
+    color-scheme: dark;
+}
+
+/* Hasil 8D diberi cahaya sebagai elemen utama */
+main[class] > div > div > div:last-child {
+    margin-top: 22px;
+    padding: 18px 20px 20px;
+    border: 1px solid rgba(182, 87, 255, 0.45);
+    border-radius: 18px;
+    background:
+        linear-gradient(135deg, rgba(61, 123, 255, 0.14), rgba(182, 87, 255, 0.16)),
+        rgba(8, 10, 30, 0.7);
+    box-shadow: 0 0 44px -12px rgba(182, 87, 255, 0.7);
+}
+
+main[class] > div > div > div:last-child p {
+    color: #e3d9ff;
+}
+
+/* ---------- Halaman loading ---------- */
+
+main[class] > div > p:only-child {
+    padding: 22px;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: var(--panel);
+    color: #c9c2ff;
+    font-weight: 500;
+    text-align: center;
+    animation: pulse-glow 1.8s ease-in-out infinite;
+}
+
+/* ---------- Halaman error ---------- */
+
+main[class] > div > h1 {
+    margin-bottom: 12px;
+    background: var(--grad);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+main[class] > div > h1 + p {
+    margin-bottom: 20px;
+    padding: 14px 16px;
+    border: 1px solid rgba(255, 107, 154, 0.4);
+    border-radius: 12px;
+    background: rgba(255, 107, 154, 0.08);
+    color: var(--danger);
+    font-size: 0.92rem;
+    line-height: 1.6;
+}
+
+main[class] > div > button[type="button"] {
+    padding: 11px 24px;
+    border: 1px solid var(--violet);
+    border-radius: 12px;
+    background: rgba(139, 92, 246, 0.14);
+    color: #ddd5ff;
+    font-family: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, box-shadow 0.2s;
+}
+
+main[class] > div > button[type="button"]:hover {
+    background: rgba(139, 92, 246, 0.3);
+    box-shadow: 0 0 26px -6px rgba(182, 87, 255, 0.8);
+}
+
+/* ---------- Fokus keyboard ---------- */
+
+main[class] button:focus-visible,
+main[class] input:focus-visible {
+    outline: 2px solid var(--purple);
+    outline-offset: 3px;
+}
+
+/* ---------- Animasi ---------- */
+
+@keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0); }
+    50%      { box-shadow: 0 0 34px 0 rgba(139, 92, 246, 0.55); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    main[class] * {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
+/* ---------- Layar kecil ---------- */
+
+@media (max-width: 480px) {
+    main[class] {
+        padding: 28px 12px 48px;
+    }
+
+    main[class] form,
+    main[class] > div > div {
+        padding-left: 18px;
+        padding-right: 18px;
+    }
+
+    main[class] form input[type="file"]::file-selector-button {
+        display: block;
+        margin: 0 0 10px;
+    }
 }
