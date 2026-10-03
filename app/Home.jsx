@@ -17,6 +17,7 @@ export default function Home() {
     const [stereoWidth, setStereoWidth] = useState(1)
     const [irWet, setIrWet] = useState(0.30)
     const [volume, setVolume] = useState(20)
+    const [audioSpeed, setAudioSpeed] = useState(1.0)
 
     const ffmpegRef = useRef(new FFmpeg())
 
@@ -114,6 +115,7 @@ export default function Home() {
         const width = Number(data.get("stereoWidth") ?? stereoWidth)
         const wet = Number(data.get("irWet") ?? irWet)
         const volumeValue = Number(data.get("volume") ?? volume)
+        const audioSpeedValue = Number(data.get("audioSpeed") ?? audioSpeed)
 
         await create8DAudio(
             file,
@@ -126,6 +128,7 @@ export default function Home() {
                 width,
                 wet,
                 volume: volumeValue,
+                audioSpeed: audioSpeedValue,
             }
         )
     }
@@ -181,6 +184,11 @@ export default function Home() {
             const volumeValue = Math.max(
                 1,
                 Math.min(50, Number(settings.volume))
+            )
+
+            const audioSpeedValue = Math.max(
+                0.25,
+                Math.min(4, Number(settings.audioSpeed ?? 1))
             )
 
             // ==================================================
@@ -295,12 +303,29 @@ export default function Home() {
             //
             // ==================================================
 
+            let speedFilter = ""
+            if (Math.abs(audioSpeedValue - 1) > 0.001) {
+                let s = audioSpeedValue
+                const parts = []
+                while (s > 2.0) {
+                    parts.push("atempo=2.0")
+                    s /= 2.0
+                }
+                while (s < 0.5) {
+                    parts.push("atempo=0.5")
+                    s /= 0.5
+                }
+                parts.push(`atempo=${Number(s.toFixed(4))}`)
+                speedFilter = "," + parts.join(",")
+            }
+
             const filterComplex =
                 "[0:a]" +
                 "aresample=48000," +
                 "aformat=sample_fmts=fltp:channel_layouts=stereo," +
                 "highpass=f=28," +
                 "lowpass=f=18500" +
+                speedFilter +
                 "[main];" +
 
                 "[1:a]" +
@@ -709,6 +734,26 @@ export default function Home() {
                                 <small>Semakin tinggi, semakin kuat karakter ruang.</small>
                             </div>
 
+                            <div className="setting">
+                                <div className="setting-top">
+                                    <label>Kecepatan Suara</label>
+                                    <span>{audioSpeed.toFixed(2)}×</span>
+                                </div>
+                                <input
+                                    className="neon-range"
+                                    type="range"
+                                    name="audioSpeed"
+                                    min="0.5"
+                                    max="2"
+                                    step="0.05"
+                                    value={audioSpeed}
+                                    onChange={(event) =>
+                                        setAudioSpeed(Number(event.target.value))
+                                    }
+                                />
+                                <small>Kecepatan tempo lagu: slow (&lt; 1×) atau speed up (&gt; 1×).</small>
+                            </div>
+
                             <div className="setting setting-volume">
                                 <div className="setting-top">
                                     <label>Volume</label>
@@ -739,7 +784,14 @@ export default function Home() {
                     >
                         <span className="button-glow"></span>
                         <span className="button-content">
-                            {applying ? "Processing..." : "Generate 8D Audio"}
+                            {applying ? (
+                                <span className="button-loading-content">
+                                    <span className="spinner-icon"></span>
+                                    <span>Memproses Audio 8D...</span>
+                                </span>
+                            ) : (
+                                "Generate 8D Audio"
+                            )}
                         </span>
                     </button>
                 </form>
